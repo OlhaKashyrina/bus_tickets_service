@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health_checks.routes import router as health_checks_router
+from app.api.cities.routes import router as cities_router
 from app.core.config import get_settings
 from app.core.lifespan import lifespan
 
@@ -19,6 +20,7 @@ def create_app() -> FastAPI:
     _app = FastAPI(title=settings.PROJECT_NAME, version='0.1.0', lifespan=lifespan)
 
     _app.include_router(health_checks_router)
+    _app.include_router(cities_router)
 
     _app.add_middleware(
         CORSMiddleware,
