@@ -10,8 +10,6 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import get_settings
 
-DATABASE_URL = "postgresql+psycopg2://postgres:postgres@db:5432/bus_service_db"
-
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -65,8 +63,9 @@ async def open_db_session() -> AsyncGenerator[AsyncSession, Any]:
         await session.close()
 
 
-def get_alembic_config(database_url: PostgresDsn, script_location: str = 'migrations') -> Config:
+def get_alembic_config(database_url: PostgresDsn, script_location: str = 'alembic') -> Config:
     alembic_config = Config()
     alembic_config.set_main_option('script_location', script_location)
     alembic_config.set_main_option('sqlalchemy.url', database_url.unicode_string())
     return alembic_config
+    
