@@ -95,7 +95,7 @@ def _postgres_container() -> Generator[PostgresContainer, Any, None]:
 
 def find_migrations_script_location() -> str:
     """Help find script location if tests were run by debugger or any other way except writing 'pytest' in cli"""
-    return os.path.join(pathlib.Path(os.path.dirname(os.path.realpath(__file__))).parent, 'migrations')
+    return os.path.join(pathlib.Path(os.path.dirname(os.path.realpath(__file__))).parent, 'alembic')
 
 
 @pytest.fixture(scope='session', params=(DefaultEventLoopPolicy(),))
