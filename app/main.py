@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.health_checks.routes import router as health_checks_router
 from app.api.cities.routes import router as cities_router
 from app.api.buses.routes import router as buses_router
+from app.api.trips.routes import router as trips_router
 from app.core.config import get_settings
 from app.core.lifespan import lifespan
 
@@ -23,6 +24,7 @@ def create_app() -> FastAPI:
     _app.include_router(health_checks_router)
     _app.include_router(cities_router)
     _app.include_router(buses_router)
+    _app.include_router(trips_router)
 
     _app.add_middleware(
         CORSMiddleware,
