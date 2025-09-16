@@ -25,7 +25,7 @@ class CityRepository:
 
     @staticmethod
     async def update(db: AsyncSession, city: City, obj_in: CityUpdate) -> City:
-        for field, value in obj_in.model_dump().items():
+        for field, value in obj_in.model_dump(exclude_unset=True).items():
             setattr(city, field, value)
         await db.flush()
         return city
