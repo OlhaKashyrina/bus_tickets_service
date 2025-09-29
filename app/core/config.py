@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     DATABASE_URL: PostgresDsn
     MIGRATION_ON_STARTUP: bool = True  # True for environments and False for local development
 
+    AWS_REGION: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_S3_BUCKET: str
+
     model_config = SettingsConfigDict(
         case_sensitive=True,
         frozen=True,
