@@ -10,7 +10,7 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession, create_async_engine
 from testcontainers.postgres import PostgresContainer
-from tests.dependencies import override_dependency
+from tests.dependencies import clear_dependency_override, override_dependency
 
 from app.core.config import get_settings
 
@@ -39,12 +39,12 @@ async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, Any]:
         yield client
 
 
-@pytest_asyncio.fixture(scope='function')
+@pytest_asyncio.fixture(scope='function', autouse=True)
 async def session(app: FastAPI, _engine: AsyncEngine) -> AsyncIterable[AsyncSession]:
     connection = await _engine.connect()
     trans = await connection.begin()
 
-    session_factory = async_sessionmaker(connection, expire_on_commit=False)
+    session_factory = async_sessionmaker(connection, expire_on_commit=False, join_transaction_mode='create_savepoint')
     session = session_factory()
 
     from app.core.db import get_session
@@ -54,12 +54,13 @@ async def session(app: FastAPI, _engine: AsyncEngine) -> AsyncIterable[AsyncSess
     try:
         yield session
     finally:
+        clear_dependency_override(app, get_session)
         await trans.rollback()
         await session.close()
         await connection.close()
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest_asyncio.fixture(scope='session', autouse=True)
 async def _engine(_postgres_container: PostgresContainer) -> AsyncIterable[AsyncEngine]:
     settings = get_settings()
 

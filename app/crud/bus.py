@@ -28,6 +28,7 @@ class BusRepository:
         for field, value in obj_in.model_dump(exclude_unset=True).items():
             setattr(bus, field, value)
         await db.flush()
+        await db.refresh(bus)
         return bus
 
     @staticmethod
