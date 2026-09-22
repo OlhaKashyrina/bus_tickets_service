@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
-from pydantic import BaseModel, Field, HttpUrl, constr
-from typing import Optional
+
+from pydantic import BaseModel, Field, constr
 
 
 class BusBase(BaseModel):
@@ -15,10 +15,10 @@ class BusCreate(BusBase):
 
 
 class BusUpdate(BusBase):
-    color: Optional[constr(min_length=1, max_length=50)] = None
-    seats_quantity: Optional[int] = Field(None, ge=0)
-    number_plate: Optional[constr(min_length=1, max_length=10)] = None
-    photo_url: Optional[str] = None
+    color: constr(min_length=1, max_length=50) | None = None
+    seats_quantity: int | None = Field(None, ge=0)
+    number_plate: constr(min_length=1, max_length=10) | None = None
+    photo_url: str | None = None
 
 
 class BusRead(BusBase):

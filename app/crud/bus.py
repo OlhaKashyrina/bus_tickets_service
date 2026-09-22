@@ -1,6 +1,8 @@
 import uuid
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.bus import Bus
 from app.schemas.bus import BusCreate, BusUpdate
 

@@ -1,22 +1,24 @@
+from collections.abc import AsyncGenerator, AsyncIterable
 from contextlib import asynccontextmanager
 from functools import lru_cache
-from typing import Any, AsyncGenerator, AsyncIterable
+from typing import Any
 
 from alembic.config import Config
 from pydantic import PostgresDsn
 from sqlalchemy import MetaData
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import get_settings
 
 NAMING_CONVENTION = {
-    "ix": "ix_%(table_name)s_%(column_0_name)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s",
+    'ix': 'ix_%(table_name)s_%(column_0_name)s',
+    'uq': 'uq_%(table_name)s_%(column_0_name)s',
+    'ck': 'ck_%(table_name)s_%(constraint_name)s',
+    'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
+    'pk': 'pk_%(table_name)s',
 }
+
 
 class Base(DeclarativeBase):
     __abstract__ = True
@@ -68,4 +70,3 @@ def get_alembic_config(database_url: PostgresDsn, script_location: str = 'alembi
     alembic_config.set_main_option('script_location', script_location)
     alembic_config.set_main_option('sqlalchemy.url', database_url.unicode_string())
     return alembic_config
-    

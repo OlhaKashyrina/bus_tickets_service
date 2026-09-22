@@ -3,9 +3,9 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.health_checks.routes import router as health_checks_router
-from app.api.cities.routes import router as cities_router
 from app.api.buses.routes import router as buses_router
+from app.api.cities.routes import router as cities_router
+from app.api.health_checks.routes import router as health_checks_router
 from app.api.trips.routes import router as trips_router
 from app.core.config import get_settings
 from app.core.lifespan import lifespan

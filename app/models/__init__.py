@@ -1,5 +1,5 @@
-from pathlib import Path
 import pkgutil
+from pathlib import Path
 
 
 def load_all_models() -> None:

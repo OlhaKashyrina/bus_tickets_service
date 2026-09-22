@@ -1,5 +1,4 @@
 import os
-import asyncio
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
@@ -7,7 +6,6 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-
 from app.core.db import Base
 from app.models import load_all_models
 
@@ -48,12 +46,12 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option('sqlalchemy.url')
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        dialect_opts={'paramstyle': 'named'},
     )
 
     with context.begin_transaction():
@@ -66,10 +64,11 @@ def do_run_migrations(connection: Connection) -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def get_url() -> str:
     """Get database URL from environment variable or config file."""
-    database_url = os.getenv("DATABASE_URL", config.get_main_option("sqlalchemy.url"))
-    database_url = database_url.replace("postgresql+asyncpg", "postgresql")
+    database_url = os.getenv('DATABASE_URL', config.get_main_option('sqlalchemy.url'))
+    database_url = database_url.replace('postgresql+asyncpg', 'postgresql')
     return database_url
 
 
@@ -81,7 +80,7 @@ async def run_async_migrations() -> None:
 
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 
@@ -99,10 +98,10 @@ def run_migrations_online() -> None:
 
     """
     configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = get_url()
+    configuration['sqlalchemy.url'] = get_url()
     connectable = engine_from_config(
         configuration,
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 

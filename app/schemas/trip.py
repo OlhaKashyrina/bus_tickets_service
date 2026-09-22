@@ -1,7 +1,7 @@
 import uuid
-from pydantic import BaseModel, validator, condecimal
 from datetime import datetime
-from typing import List
+
+from pydantic import BaseModel, condecimal, validator
 
 
 class Stop(BaseModel):
@@ -15,33 +15,33 @@ class TripBase(BaseModel):
     name: str
     price: condecimal(gt=0)
     bus_id: uuid.UUID
-    route: List[Stop]
+    route: list[Stop]
 
 
 class TripCreate(TripBase):
-    @validator("route")
-    def validate_route(cls, value: List[Stop]):
+    @validator('route')
+    def validate_route(cls, value: list[Stop]):
         if len(value) < 2:
-            raise ValueError("Route must have at least 2 stops")
+            raise ValueError('Route must have at least 2 stops')
         times = [stop.time for stop in value]
         if times != sorted(times):
-            raise ValueError("Route must be in chronological order")
+            raise ValueError('Route must be in chronological order')
         return value
 
 
 class TripUpdate(BaseModel):
     name: str | None = None
     price: condecimal(gt=0) | None = None
-    route: List[Stop] | None = None
+    route: list[Stop] | None = None
 
-    @validator("route")
-    def validate_route(cls, value: List[Stop]):
+    @validator('route')
+    def validate_route(cls, value: list[Stop]):
         if value and len(value) < 2:
-            raise ValueError("Route must have at least 2 stops")
+            raise ValueError('Route must have at least 2 stops')
         if value:
             times = [stop.time for stop in value]
             if times != sorted(times):
-                raise ValueError("Route must be in chronological order")
+                raise ValueError('Route must be in chronological order')
         return value
 
 

@@ -1,10 +1,11 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator
+from typing import Any
 
 from alembic.command import upgrade
 from fastapi import FastAPI
 
-from app.core.config import get_settings, Settings
+from app.core.config import Settings, get_settings
 from app.core.db import get_alembic_config
 
 

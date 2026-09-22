@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  # Dummy values so pydantic-settings can build Settings() at import time.
+  # DATABASE_URL is overwritten at test-time by the testcontainers Postgres fixture.
+  DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/TestDB
+  AWS_REGION: eu-north-1
+  AWS_ACCESS_KEY_ID: dummy
+  AWS_SECRET_ACCESS_KEY: dummy
+  AWS_S3_BUCKET: dummy-bucket
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Ruff check
+        run: poetry run ruff check .
+
+      - name: Ruff format check
+        run: poetry run ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Run tests
+        run: poetry run pytest -v
