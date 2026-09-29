@@ -88,13 +88,15 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/opt/bus_tickets_service/"
 
-      - name: Write .env and deploy
+      - name: Write env files and deploy
         run: |
           ssh -i ~/.ssh/deploy_key "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" '
             cat > /opt/bus_tickets_service/.env <<EOF
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          EOF
+            cat > /opt/bus_tickets_service/app.env <<EOF
           DATABASE_URL=postgresql+asyncpg://postgres:${{ secrets.POSTGRES_PASSWORD }}@db:5432/bus_service_db
           MIGRATION_ON_STARTUP=True
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           AWS_REGION=${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
