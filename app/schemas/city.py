@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class CityBase(BaseModel):
     name: str = Field(..., min_length=2, max_length=128)
+    country: str | None = Field(default=None, max_length=128)
     longitude: float
     latitude: float
 

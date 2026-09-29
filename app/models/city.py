@@ -19,6 +19,7 @@ class City(Base):
         nullable=False,
     )
     name: Mapped[str] = mapped_column(String(128), unique=True, nullable=False, index=True)
+    country: Mapped[str | None] = mapped_column(String(128), nullable=True)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
