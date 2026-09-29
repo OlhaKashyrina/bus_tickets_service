@@ -1,6 +1,8 @@
 import uuid
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.city import City
 from app.schemas.city import CityCreate, CityUpdate
 

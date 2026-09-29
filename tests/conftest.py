@@ -1,18 +1,19 @@
-from asyncio import DefaultEventLoopPolicy
 import os
 import pathlib
-from typing import Any, AsyncGenerator, AsyncIterable, Generator
+from asyncio import DefaultEventLoopPolicy
+from collections.abc import AsyncGenerator, AsyncIterable, Generator
+from typing import Any
 
+import pytest
+import pytest_asyncio
 from alembic.command import downgrade, upgrade
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-import pytest
-import pytest_asyncio
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from testcontainers.postgres import PostgresContainer
-from tests.dependencies import clear_dependency_override, override_dependency
 
 from app.core.config import get_settings
+from tests.dependencies import clear_dependency_override, override_dependency
 
 TEST_HOST = 'http://test'
 
@@ -29,6 +30,7 @@ def pytest_configure(config: pytest.Config) -> None:
 @pytest_asyncio.fixture(scope='session')
 async def app() -> AsyncGenerator[FastAPI, Any]:
     from app.main import create_app
+
     _app = create_app()
     yield _app
 

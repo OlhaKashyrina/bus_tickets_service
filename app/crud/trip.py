@@ -1,9 +1,11 @@
 import uuid
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.trip import Trip
+
 from app.models.bus import Bus
 from app.models.city import City
+from app.models.trip import Trip
 from app.schemas.trip import TripCreate, TripUpdate
 
 
@@ -17,24 +19,26 @@ class TripRepository:
     async def get_by_id(db: AsyncSession, trip_id: uuid.UUID) -> Trip | None:
         result = await db.execute(select(Trip).where(Trip.id == trip_id))
         return result.scalar_one_or_none()
-    
+
     @staticmethod
     async def create(db: AsyncSession, data: TripCreate) -> Trip:
         bus = await db.get(Bus, data.bus_id)
         if not bus:
-            raise ValueError("Bus not found")
-        
+            raise ValueError('Bus not found')
+
         enriched_route = []
         for stop in data.route:
             city = await db.get(City, stop.city_id)
             if not city:
-                raise ValueError(f"City not found")
-            enriched_route.append({
-                "city_id": str(stop.city_id),
-                "time": stop.time.isoformat(),
-                "longitude": city.longitude,
-                "latitude": city.latitude,
-            })
+                raise ValueError('City not found')
+            enriched_route.append(
+                {
+                    'city_id': str(stop.city_id),
+                    'time': stop.time.isoformat(),
+                    'longitude': city.longitude,
+                    'latitude': city.latitude,
+                }
+            )
 
         trip = Trip(
             name=data.name,
@@ -46,23 +50,25 @@ class TripRepository:
         db.add(trip)
         await db.flush()
         return trip
-    
+
     @staticmethod
     async def update(db: AsyncSession, trip: Trip, data: TripUpdate) -> Trip:
         for key, value in data.dict(exclude_unset=True).items():
-            if key == "route" and value:
+            if key == 'route' and value:
                 enriched_route = []
                 for stop in value:
                     city = await db.get(City, stop.city_id)
                     if not city:
-                        raise ValueError(f"City not found")
-                    enriched_route.append({
-                        "city_id": str(stop.city_id),
-                        "time": stop.time.isoformat(),
-                        "longitude": city.longitude,
-                        "latitude": city.latitude,
-                    })
-                setattr(trip, "route", enriched_route)
+                        raise ValueError('City not found')
+                    enriched_route.append(
+                        {
+                            'city_id': str(stop.city_id),
+                            'time': stop.time.isoformat(),
+                            'longitude': city.longitude,
+                            'latitude': city.latitude,
+                        }
+                    )
+                trip.route = enriched_route
             else:
                 setattr(trip, key, value)
         await db.flush()
