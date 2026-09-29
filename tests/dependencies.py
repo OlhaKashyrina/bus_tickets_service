@@ -10,3 +10,11 @@ def override_dependency(app: FastAPI, dependency: Callable, override: Callable) 
     for route in app.router.routes:
         if isinstance(route, Mount):
             route.app.dependency_overrides[dependency] = override
+
+
+def clear_dependency_override(app: FastAPI, dependency: Callable) -> None:
+    app.dependency_overrides.pop(dependency, None)
+
+    for route in app.router.routes:
+        if isinstance(route, Mount):
+            route.app.dependency_overrides.pop(dependency, None)
