@@ -9,20 +9,21 @@ from app.models.city import City
 
 @pytest.mark.asyncio
 async def test_create_city(client: AsyncClient):
-    city = {'name': 'Paris', 'longitude': 2.3522, 'latitude': 48.8566}
+    city = {'name': 'Paris', 'country': 'France', 'longitude': 2.3522, 'latitude': 48.8566}
 
     resp = await client.post('/cities/', json=city)
     assert resp.status_code == 200, resp.text
 
     data = resp.json()
     assert data['name'] == 'Paris'
+    assert data['country'] == 'France'
     assert 'id' in data
     uuid.UUID(data['id'])
 
 
 @pytest.mark.asyncio
 async def test_get_city(client: AsyncClient, session: AsyncSession):
-    city = City(name='Paris', longitude=2.3522, latitude=48.8566)
+    city = City(name='Paris', country='France', longitude=2.3522, latitude=48.8566)
     session.add(city)
     await session.commit()
     await session.refresh(city)
@@ -33,6 +34,7 @@ async def test_get_city(client: AsyncClient, session: AsyncSession):
     data = resp.json()
     assert data['id'] == str(city.id)
     assert data['name'] == 'Paris'
+    assert data['country'] == 'France'
 
 
 @pytest.mark.asyncio
